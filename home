@@ -1,0 +1,10 @@
+#!/bin/sh
+
+home_file="/home/bailor/.config/home-manager/home.nix"
+last_mod_time="$(stat -c %Y "$home_file")"
+$EDITOR $home_file
+[ "$(stat -c %Y "$home_file")" -gt $last_mod_time ] \
+    && (
+        gum spin home-manager switch --show-error --title "Rebuilding Home Manager" \
+            && echo "Rebuild succeeded!"
+    ) \
