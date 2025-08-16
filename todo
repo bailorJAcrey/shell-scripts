@@ -30,6 +30,13 @@ modify() {
                         | gum write \
                         | xargs -I {} todoist m -c {} $id
                     ;;
+                "priority")
+                    todoist show $id \
+                        | awk '{if($1 == "Priority") print}' \
+                        | sed 's/Priority //' | sed 's/p//' \
+                        | xargs -I {} gum choose 1 2 3 4 --header="Current Priority: {}" \
+                        | xargs -I {} todoist m -p {} $id || true
+                    ;;
                 *) echo todo ;;
             esac
         ) || true
