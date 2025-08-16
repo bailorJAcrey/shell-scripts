@@ -1,7 +1,11 @@
 #!/bin/sh
 
+get_task() {
+    todoist list | fzf --tac --height 20
+}
+
 close() {
-    local result="$(todoist list | fzf --tac --height 20)"
+    local result="$(get_task)"
     [ -n "$result" ] \
         && (
             local id="$(echo $result | awk '{print $1}')"
