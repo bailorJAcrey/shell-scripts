@@ -1,0 +1,18 @@
+#!/bin/sh
+
+close() {
+    local result="$(todoist list | fzf --tac --height 20)"
+    [ -n "$result" ] \
+        && (
+            echo $result | awk '{print $1}' | xargs todoist close
+        ) || true
+}
+
+case $1 in
+    "close" | "c")
+        close
+        ;;
+    *)
+        echo "subcomand \`$1\` not found"
+        ;;
+esac
