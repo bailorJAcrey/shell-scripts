@@ -12,6 +12,29 @@ show() {
         ) || true
 }
 
+modify() {
+    local result="$(get_task)"
+    [ -n "$result" ] \
+        && (
+            local id="$(echo $result | awk '{print $1}')"
+            local selection="$(gum choose \
+                "content" \
+                "priority" \
+                "project" \
+                "date")"
+            case $selection in
+                "content")
+                    todoist show $id \
+                        | awk '{if($1 == "Content") print}' \
+                        | sed 's/Content  //' \
+                        | gum write \
+                        | xargs -I {} todoist m -c {} $id
+                    ;;
+                *) echo todo ;;
+            esac
+        ) || true
+}
+
 close() {
     local result="$(get_task)"
     [ -n "$result" ] \
@@ -23,13 +46,8 @@ close() {
 }
 
 case $1 in
-    "show")
-        show
-        ;;
-    "close" | "c")
-        close
-        ;;
-    *)
-        echo "subcomand \`$1\` not found"
-        ;;
+    "show") show ;;
+    "modify" | "m") modify ;;
+    "close" | "c") close ;;
+    *) echo "subcomand \`$1\` not found" ;;
 esac
