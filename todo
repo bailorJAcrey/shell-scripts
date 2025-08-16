@@ -56,5 +56,5 @@ case $1 in
     "show") show ;;
     "modify" | "m") modify ;;
     "close" | "c") close ;;
-    *) echo "subcomand \`$1\` not found" ;;
+    *) todoist "$@" ;;
 esac
