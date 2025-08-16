@@ -52,9 +52,20 @@ close() {
         ) || true
 }
 
+delete() {
+    local result="$(get_task)"
+    [ -n "$result" ] \
+        && (
+            local id="$(echo $result | awk '{print $1}')"
+            gum spin todoist delete $id --title="Deleting task..." --show-error \
+                && echo "Task deleted!"
+        ) || true
+}
+
 case $1 in
     "show") show ;;
     "modify" | "m") modify ;;
     "close" | "c") close ;;
+    "delete" | "d") delete ;;
     *) todoist "$@" ;;
 esac
