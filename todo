@@ -4,7 +4,9 @@ close() {
     local result="$(todoist list | fzf --tac --height 20)"
     [ -n "$result" ] \
         && (
-            echo $result | awk '{print $1}' | xargs todoist close
+            local id="$(echo $result | awk '{print $1}')"
+            gum spin todoist close $id --title="Closing task..." --show-error \
+                && echo "Task closed!"
         ) || true
 }
 
