@@ -19,8 +19,24 @@ shot() {
         )
 }
 
+start_recording() {
+    [ "$(hyprctl monitors -j | jq 'length')" == "1" ] \
+        && wf-recorder -f "$capture_dir$file_name.mkv" \
+        || ( \
+            slurp -c $slurp_border_color -b $slurp_background_color -o \
+            | xargs -I {} wf-recorder -g {} -f "$capture_dir$file_name.mkv"
+        )
+}
+
+record() {
+    [ "$(ps ax | rg wf-recorder | sed '/rg wf-recorder/d')" == "" ] \
+        && start_recording \
+        || pkill wf-recorder
+}
+
 case $1 in
     "snip") snip ;;
     "shot") shot ;;
+    "record") record ;;
     *) exit 1 ;;
 esac
