@@ -9,6 +9,7 @@ snip() {
     local name="$capture_dir$file_name.png"
     slurp -c $slurp_border_color -b $slurp_background_color \
         | xargs -I {} grim -g {} $name
+    notify-send "Screensnip saved to '$name'"
 }
 
 shot() {
@@ -19,22 +20,23 @@ shot() {
             slurp -c $slurp_border_color -b $slurp_background_color -o \
             | xargs -I {} grim -g {} $name \
         )
+    notify-send "Screenshot saved to '$name'"
 }
 
 start_recording() {
-    local name="$capture_dir$file_name.mkv"
     [ "$(hyprctl monitors -j | jq 'length')" == "1" ] \
-        && wf-recorder -f $name \
+        && wf-recorder -f $1 \
         || ( \
             slurp -c $slurp_border_color -b $slurp_background_color -o \
-            | xargs -I {} wf-recorder -g {} -f $name
+            | xargs -I {} wf-recorder -g {} -f $1
         )
 }
 
 record() {
+    local name="$capture_dir$file_name.mkv"
     [ "$(ps ax | rg wf-recorder | sed '/rg wf-recorder/d')" == "" ] \
-        && start_recording \
-        || pkill wf-recorder
+        && (notify-send -t 1000 "Recording started" ; start_recording $name) \
+        || (pkill wf-recorder ; notify-send "Recording saved to '$name'")
 }
 
 case $1 in
