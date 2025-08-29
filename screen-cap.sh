@@ -6,25 +6,28 @@ file_name="$(date | sed 's/ /-/g')"
 capture_dir="$HOME/captures/$1/"
 
 snip() {
+    local name="$capture_dir$file_name.png"
     slurp -c $slurp_border_color -b $slurp_background_color \
-        | xargs -I {} grim -g {} "$capture_dir$file_name.png"
+        | xargs -I {} grim -g {} $name
 }
 
 shot() {
+    local name="$capture_dir$file_name.png"
     [ "$(hyprctl monitors -j | jq 'length')" == "1" ] \
-        && grim "$capture_dir$file_name.png" \
+        && grim $name \
         || ( \
             slurp -c $slurp_border_color -b $slurp_background_color -o \
-            | xargs -I {} grim -g {} "$capture_dir$file_name.png" \
+            | xargs -I {} grim -g {} $name \
         )
 }
 
 start_recording() {
+    local name="$capture_dir$file_name.mkv"
     [ "$(hyprctl monitors -j | jq 'length')" == "1" ] \
-        && wf-recorder -f "$capture_dir$file_name.mkv" \
+        && wf-recorder -f $name \
         || ( \
             slurp -c $slurp_border_color -b $slurp_background_color -o \
-            | xargs -I {} wf-recorder -g {} -f "$capture_dir$file_name.mkv"
+            | xargs -I {} wf-recorder -g {} -f $name
         )
 }
 
