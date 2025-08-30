@@ -38,4 +38,8 @@ handle = io.popen(
     ),
     "r"
 )
-print(actions[handle:read()])
+if handle ~= nil then
+    print(actions[handle:read()])
+else
+    os.exit(42)
+end
