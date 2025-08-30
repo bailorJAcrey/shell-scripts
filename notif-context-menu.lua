@@ -21,12 +21,21 @@ end
 
 pos_x, pos_y = get_cursor_position()
 window_width = 250
+
+actions = {}
+stdin = ""
+
+for action_str in string.gmatch(io.read("*a"), "[^\n]+") do
+    local pretty_action_str = string.sub(action_str:match("%b#("), 2, -3)
+    actions[pretty_action_str] = action_str
+    stdin = stdin .. pretty_action_str .. "\n"
+end
+
 handle = io.popen(
     string.format(
-        "rofi -dmenu -location 1 -theme-str 'window { width: %d; x-offset: %d; y-offset: %d; }'",
-        window_width, pos_x - window_width, pos_y
+        " echo -e \"%s\" | rofi -dmenu -location 1 -theme-str 'window { width: %d; x-offset: %d; y-offset: %d; }'",
+        stdin:sub(1, -2), window_width, pos_x - window_width, pos_y
     ),
-    "w"
+    "r"
 )
-handle:write(io.read("*a"))
-handle:close()
+print(actions[handle:read()])
