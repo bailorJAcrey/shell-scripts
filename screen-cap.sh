@@ -47,7 +47,11 @@ start_recording() {
 }
 
 record() {
-    local name="$capture_dir$file_name.mkv"
+    local name="$(
+        local proc_search="$(ps ax | rg wf-recorder | sed '/rg wf-recorder/d')"
+        [ -z $proc_search ] && echo "$capture_dir$file_name.mkv" \
+            || echo $proc_search | sed 's/.*wf-recorder -f //' \
+    )" 
     [ "$(ps ax | rg wf-recorder | sed '/rg wf-recorder/d')" == "" ] \
         && (notify-send -t 1000 "Recording started" ; start_recording $name) \
         || (
