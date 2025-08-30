@@ -33,7 +33,7 @@ end
 
 handle = io.popen(
     string.format(
-        " echo -e \"%s\" | rofi -dmenu -location 1 -theme-str 'window { width: %d; x-offset: %d; y-offset: %d; }'",
+        " echo -e \"%s\" | rofi -i -dmenu -location 1 -theme-str 'window { width: %d; x-offset: %d; y-offset: %d; }'",
         stdin:sub(1, -2), window_width, pos_x - window_width, pos_y
     ),
     "r"
