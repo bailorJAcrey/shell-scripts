@@ -9,7 +9,14 @@ snip() {
     local name="$capture_dir$file_name.png"
     slurp -c $slurp_border_color -b $slurp_background_color \
         | xargs -I {} grim -g {} $name
-    notify-send "Screensnip saved to '$name'"
+    case $(dunstify \
+        -A "open,Open the image" \
+        -A "dir,View in directory" \
+        "Screensnip taken!" "saved to '$name'"
+    ) in
+        "open") xdg-open $name ;;
+        "dir") xdg-open $capture_dir ;;
+    esac
 }
 
 shot() {
@@ -20,7 +27,14 @@ shot() {
             slurp -c $slurp_border_color -b $slurp_background_color -o \
             | xargs -I {} grim -g {} $name \
         )
-    notify-send "Screenshot saved to '$name'"
+    case $(dunstify \
+        -A "open,Open the image" \
+        -A "dir,View in directory" \
+        "Screenshot taken!" "saved to '$name'"
+    ) in
+        "open") xdg-open $name ;;
+        "dir") xdg-open $capture_dir ;;
+    esac
 }
 
 start_recording() {
@@ -36,7 +50,17 @@ record() {
     local name="$capture_dir$file_name.mkv"
     [ "$(ps ax | rg wf-recorder | sed '/rg wf-recorder/d')" == "" ] \
         && (notify-send -t 1000 "Recording started" ; start_recording $name) \
-        || (pkill wf-recorder ; notify-send "Recording saved to '$name'")
+        || (
+            pkill wf-recorder
+            case $(dunstify \
+                -A "open,Open the recording" \
+                -A "dir,View in directory" \
+                "Recording stopped!" "saved to '$name'"
+            ) in
+                "open") xdg-open $name ;;
+                "dir") xdg-open $capture_dir ;;
+            esac
+        )
 }
 
 case $1 in
