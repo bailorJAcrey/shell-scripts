@@ -67,5 +67,6 @@ case $1 in
     "modify" | "m") modify ;;
     "close" | "c") close ;;
     "delete" | "d") delete ;;
+    "quick" | "q") gum spin todoist "$@" --title="Creating task..." ;;
     *) todoist "$@" ;;
 esac
